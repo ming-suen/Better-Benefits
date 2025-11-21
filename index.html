@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BetterBenefits | Financial Clarity</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <header>
+        <div class="nav-container">
+            <a href="#" class="logo" onclick="switchTab('home')">BetterBenefits</a>
+            <div class="hamburger" onclick="document.getElementById('navLinks').classList.toggle('mobile-active')">
+                <div class="bar"></div><div class="bar"></div><div class="bar"></div>
+            </div>
+            <nav class="nav-links" id="navLinks">
+                <button class="nav-btn active" onclick="switchTab('home')">Home</button>
+                <button class="nav-btn" onclick="switchTab('basics')">Benefit Basics</button>
+                <button class="nav-btn" onclick="switchTab('selector')">Benefit Plan Selector</button>
+                <button class="nav-btn" onclick="switchTab('claims')">Claim Explainer</button>
+            </nav>
+        </div>
+    </header>
+
+    <section id="home" class="page-section active-section">
+        <div class="container" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem; align-items: center; min-height: 60vh;">
+            <div>
+                <h1>Financial clarity for your health decisions.</h1>
+                <p style="font-size: 1.1rem; color: var(--text-light); margin: 1.5rem 0;">Choosing benefits shouldn't feel like a gamble. BetterBenefits analyzes your needs to recommend the best health plans.</p>
+                <button class="btn" onclick="switchTab('selector')">Compare Plans Now</button>
+            </div>
+            <div>
+                <img src="Gemini_Generated_Image_hjzd4uhjzd4uhjzd.png" alt="Family confused by bills" style="width: 100%; border-radius: var(--radius); box-shadow: var(--shadow);">
+            </div>
+        </div>
+    </section>
+
+    <section id="basics" class="page-section">
+        <div class="container">
+            <h2 class="mb-4">Benefit Basics</h2>
+            <div class="grid-4">
+                <div class="card"><h3>Deductible</h3><p>Amount you pay before insurance kicks in.</p></div>
+                <div class="card"><h3>Coinsurance</h3><p>Your share of costs (e.g., 20%) after deductible.</p></div>
+                <div class="card"><h3>Copay</h3><p>Fixed fee ($20) for specific visits.</p></div>
+                <div class="card"><h3>MOOP</h3><p>Max Out-of-Pocket. The safety net cap.</p></div>
+            </div>
+        </div>
+    </section>
+
+    <section id="selector" class="page-section">
+        <div class="container">
+            <h2>Benefit Plan Selector</h2>
+            
+            <div class="wizard-nav">
+                <div class="wizard-step active" id="step-btn-1" onclick="showWizardStep(1)">1. My Profile</div>
+                <div class="wizard-step" id="step-btn-2" onclick="showWizardStep(2)">2. Add Plans</div>
+                <div class="wizard-step" id="step-btn-3" onclick="showWizardStep(3)">3. Results</div>
+            </div>
+
+            <div id="wizard-step-1">
+                <div class="card">
+                    <h3>Your Usage Profile</h3>
+                    <p class="mb-4 text-sm text-gray-600">Select a baseline, then customize your specific needs.</p>
+                    
+                    <div class="grid-2" style="align-items: end;">
+                        <div class="form-group">
+                            <label>Load Standard Profile</label>
+                            <select id="baseProfile" onchange="loadProfile(this.value)">
+                                <option value="">Select usage level...</option>
+                                <option value="low">Low (Checkups only)</option>
+                                <option value="med">Medium (Occasional Sick)</option>
+                                <option value="high">High (Chronic/Surgery)</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>State of Residency</label>
+                            <select id="userState"><option>Arizona</option><option>California</option><option>Texas</option><option>New York</option></select>
+                        </div>
+                    </div>
+
+                    <h4 class="mt-4">Estimated Medical Needs (Annual)</h4>
+                    <table class="medical-table">
+                        <thead><tr><th>Description</th><th>Type</th><th>Cost/Unit ($)</th><th>Count</th><th>Total</th><th>Action</th></tr></thead>
+                        <tbody id="needsTableBody">
+                            </tbody>
+                    </table>
+
+                    <div style="background: #f9fafb; padding: 1rem; margin-top: 1rem; border: 1px dashed var(--border); border-radius: var(--radius);">
+                        <h5>Add Specific Procedure</h5>
+                        <div class="grid-4" style="align-items: end;">
+                            <div class="form-group">
+                                <label>Description</label>
+                                <input type="text" id="newDesc" placeholder="e.g. MRI">
+                            </div>
+                            <div class="form-group">
+                                <label>Type</label>
+                                <select id="newType">
+                                    <option value="pcp">PCP Visit</option>
+                                    <option value="specialist">Specialist Visit</option>
+                                    <option value="uc">Urgent Care</option>
+                                    <option value="er">Emergency Room</option>
+                                    <option value="other">Other/Surgery</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Cost ($)</label>
+                                <input type="number" id="newCost" placeholder="0">
+                            </div>
+                            <div class="form-group">
+                                <label>Count</label>
+                                <input type="number" id="newCount" value="1">
+                            </div>
+                        </div>
+                        <button class="btn btn-sm" onclick="addCustomNeed()">+ Add</button>
+                    </div>
+
+                    <div style="text-align: right; margin-top: 2rem;">
+                        <h3 id="totalEstCost">Total Est. Cost: $0</h3>
+                        <button class="btn" onclick="showWizardStep(2)">Next: Add Plans &rarr;</button>
+                    </div>
+                </div>
+            </div>
+
+            <div id="wizard-step-2" class="hidden">
+                <div class="grid-2">
+                    <div class="card">
+                        <h3>Add Insurance Plan</h3>
+                        <div class="form-group">
+                            <label>Plan Name</label>
+                            <input type="text" id="planName" placeholder="e.g. Aetna Gold">
+                        </div>
+                        <div class="grid-2">
+                            <div class="form-group">
+                                <label>Monthly Premium ($)</label>
+                                <input type="number" id="planPrem">
+                            </div>
+                            <div class="form-group">
+                                <label>Deductible ($)</label>
+                                <input type="number" id="planDed">
+                            </div>
+                        </div>
+                        <div class="grid-2">
+                            <div class="form-group">
+                                <label>OOP Max (MOOP) ($)</label>
+                                <input type="number" id="planMoop">
+                            </div>
+                            <div class="form-group">
+                                <label>Coinsurance (%) (You Pay)</label>
+                                <input type="number" id="planCoin" value="20">
+                            </div>
+                        </div>
+                        
+                        <div class="form-group" style="background: var(--primary-light); padding: 10px; border-radius: var(--radius);">
+                            <label style="display: flex; align-items: center; cursor: pointer;">
+                                <input type="checkbox" id="hasCopays" onchange="toggleCopayFields()" style="width: auto; margin-right: 10px;"> 
+                                Plan includes Copays? (Uncheck for HDHP)
+                            </label>
+                        </div>
+
+                        <div id="copayFields" class="hidden">
+                            <div class="grid-2">
+                                <div class="form-group"><label>PCP Copay ($)</label><input type="number" id="copayPcp" value="0"></div>
+                                <div class="form-group"><label>Specialist Copay ($)</label><input type="number" id="copaySpec" value="0"></div>
+                                <div class="form-group"><label>Urgent Care Copay ($)</label><input type="number" id="copayUc" value="0"></div>
+                                <div class="form-group"><label>ER Copay ($)</label><input type="number" id="copayEr" value="0"></div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Employer HSA/FSA Contribution ($)</label>
+                            <input type="number" id="planFund" value="0">
+                        </div>
+
+                        <button class="btn w-full" onclick="addPlan()">Add Plan</button>
+                    </div>
+
+                    <div>
+                        <h3>Plans to Compare</h3>
+                        <div id="planListContainer">
+                            <p style="color: var(--text-light); font-style: italic;">No plans added yet.</p>
+                        </div>
+                        <button class="btn btn-outline w-full mt-4" onclick="showWizardStep(3)">Run Comparison &rarr;</button>
+                    </div>
+                </div>
+            </div>
+
+            <div id="wizard-step-3" class="hidden">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                    <h3>Recommendation</h3>
+                    <button class="btn btn-outline btn-sm" onclick="showWizardStep(2)">Back to Plans</button>
+                </div>
+                
+                <div id="resultsContainer"></div>
+            </div>
+
+        </div>
+    </section>
+
+    <section id="claims" class="page-section">
+        <div class="container">
+            <h2>Claim Decoder</h2>
+            <p>Enter billed amount, allowed amount, and your plan status to explain a bill.</p>
+            <div class="card mt-4">
+                <p>Use the tool on the main page to calculate costs. This section is for explaining EOBs.</p>
+             </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2025 BetterBenefits. All rights reserved.</p>
+            <div style="margin: 1rem 0;">
+                <a href="#">Privacy Policy</a> | <a href="#">Terms of Service</a>
+            </div>
+            <p style="color: #6B7280; font-size: 0.8rem; max-width: 600px; margin: 0 auto;">
+                <strong>Disclaimer: Not Financial Advice.</strong> The content provided on this website is for educational and informational purposes only. It does not constitute financial, insurance, or medical advice. Please consult with a qualified professional before making benefit decisions.
+            </p>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
