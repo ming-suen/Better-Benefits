@@ -1,18 +1,22 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>BetterBenefits | Financial Clarity</title>
     <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
 
     <header>
         <div class="nav-container">
             <a href="#" class="logo" onclick="switchTab('home')">BetterBenefits</a>
             <div class="hamburger" onclick="document.getElementById('navLinks').classList.toggle('mobile-active')">
-                <div class="bar"></div><div class="bar"></div><div class="bar"></div>
+                <div class="bar"></div>
+                <div class="bar"></div>
+                <div class="bar"></div>
             </div>
             <nav class="nav-links" id="navLinks">
                 <button class="nav-btn active" onclick="switchTab('home')">Home</button>
@@ -24,14 +28,17 @@
     </header>
 
     <section id="home" class="page-section active-section">
-        <div class="container" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem; align-items: center; min-height: 60vh;">
+        <div class="container"
+            style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem; align-items: center; min-height: 60vh;">
             <div>
                 <h1>Financial clarity for your health decisions.</h1>
-                <p style="font-size: 1.1rem; color: var(--text-light); margin: 1.5rem 0;">Choosing benefits shouldn't feel like a gamble. BetterBenefits analyzes your needs to recommend the best health plans.</p>
+                <p style="font-size: 1.1rem; color: var(--text-light); margin: 1.5rem 0;">Choosing benefits shouldn't
+                    feel like a gamble. BetterBenefits analyzes your needs to recommend the best health plans.</p>
                 <button class="btn" onclick="switchTab('selector')">Compare Plans Now</button>
             </div>
             <div>
-                <img src="Gemini_Generated_Image_hjzd4uhjzd4uhjzd.png" alt="Family confused by bills" style="width: 100%; border-radius: var(--radius); box-shadow: var(--shadow);">
+                <img src="hero_image.png" alt="Family confused by bills"
+                    style="width: 100%; border-radius: var(--radius); box-shadow: var(--shadow);">
             </div>
         </div>
     </section>
@@ -39,11 +46,64 @@
     <section id="basics" class="page-section">
         <div class="container">
             <h2 class="mb-4">Benefit Basics</h2>
-            <div class="grid-4">
-                <div class="card"><h3>Deductible</h3><p>Amount you pay before insurance kicks in.</p></div>
-                <div class="card"><h3>Coinsurance</h3><p>Your share of costs (e.g., 20%) after deductible.</p></div>
-                <div class="card"><h3>Copay</h3><p>Fixed fee ($20) for specific visits.</p></div>
-                <div class="card"><h3>MOOP</h3><p>Max Out-of-Pocket. The safety net cap.</p></div>
+            <div class="grid-2">
+                <div class="card">
+                    <h3 style="color: var(--primary);">Allowed amount</h3>
+                    <p>Known as the "negotiated rate" between your provider and your health insurance plan. It is the
+                        maximum dollar amount you and your plan shall pay for.</p>
+                </div>
+                <div class="card">
+                    <h3 style="color: var(--primary);">Deductible</h3>
+                    <p>The amount you pay for covered health care services before your insurance plan starts to pay.</p>
+                </div>
+                <div class="card">
+                    <h3 style="color: var(--primary);">Coinsurance</h3>
+                    <p>The percentage of costs of a covered health care service you pay (20%, for example) after you've
+                        paid your deductible. The remaining amount is paid by your health insurance plan.</p>
+                </div>
+                <div class="card">
+                    <h3 style="color: var(--primary);">Copay</h3>
+                    <p>A fixed amount ($20, for example) you pay for a covered health care service after you've paid
+                        your deductible. A High Deductible Health Plan (HDHP) does not typically have copay.</p>
+                </div>
+                <div class="card">
+                    <h3 style="color: var(--primary);">Max Out of Pocket (MOOP)</h3>
+                    <p>The most you have to pay for covered services in a plan year. After you spend this amount on
+                        deductibles, copayments, and coinsurance, your health plan pays 100% of the costs.</p>
+                </div>
+                <div class="card">
+                    <h3 style="color: var(--primary);">Premium</h3>
+                    <p>The amount you pay for your health insurance every month.</p>
+                </div>
+            </div>
+
+            <div class="card mt-4">
+                <h3 style="color: var(--primary);">HSA vs FSA</h3>
+                <p><strong>HSA (Health Savings Account):</strong> Available only with High Deductible Health Plans.
+                    Money rolls over year to year. It's yours forever.</p>
+                <p><strong>FSA (Flexible Spending Account):</strong> "Use it or lose it." Money typically expires at the
+                    end of the plan year.</p>
+            </div>
+
+            <div class="card mt-4">
+                <h3 style="color: var(--primary);">Benefits of HSA</h3>
+                <ul style="margin-left: 1.5rem; margin-top: 0.5rem;">
+                    <li><strong>Triple tax savings:</strong> Contributions are pre-tax, growth is tax-free, withdrawals
+                        for medical expenses are tax-free</li>
+                    <li><strong>Can invest funds:</strong> Money can grow through investments for future medical needs
+                    </li>
+                    <li><strong>Rolls over forever:</strong> Unused funds never expire and accumulate year after year
+                    </li>
+                    <li><strong>You own it:</strong> Account stays with you when changing jobs or retiring</li>
+                    <li><strong>Covers many expenses:</strong> Pay for deductibles, copays, prescriptions, dental, and
+                        vision costs</li>
+                </ul>
+            </div>
+
+            <div class="card mt-4" style="background-color: var(--primary-light); border-color: var(--primary);">
+                <h3 style="color: var(--primary);">💡 Smart Tip: Preventive Care is Free</h3>
+                <p>Most health plans must cover a set of preventive services — like shots and screening tests — at no
+                    cost to you. This includes your annual physical!</p>
             </div>
         </div>
     </section>
@@ -51,7 +111,7 @@
     <section id="selector" class="page-section">
         <div class="container">
             <h2>Benefit Plan Selector</h2>
-            
+
             <div class="wizard-nav">
                 <div class="wizard-step active" id="step-btn-1" onclick="showWizardStep(1)">1. My Profile</div>
                 <div class="wizard-step" id="step-btn-2" onclick="showWizardStep(2)">2. Add Plans</div>
@@ -62,7 +122,7 @@
                 <div class="card">
                     <h3>Your Usage Profile</h3>
                     <p class="mb-4 text-sm text-gray-600">Select a baseline, then customize your specific needs.</p>
-                    
+
                     <div class="grid-2" style="align-items: end;">
                         <div class="form-group">
                             <label>Load Standard Profile</label>
@@ -75,18 +135,84 @@
                         </div>
                         <div class="form-group">
                             <label>State of Residency</label>
-                            <select id="userState"><option>Arizona</option><option>California</option><option>Texas</option><option>New York</option></select>
+                            <select id="userState" onchange="updateStateMultiplier()">
+                                <option value="">Select State...</option>
+                                <option value="AL">Alabama</option>
+                                <option value="AK">Alaska</option>
+                                <option value="AZ">Arizona</option>
+                                <option value="AR">Arkansas</option>
+                                <option value="CA">California</option>
+                                <option value="CO">Colorado</option>
+                                <option value="CT">Connecticut</option>
+                                <option value="DE">Delaware</option>
+                                <option value="FL">Florida</option>
+                                <option value="GA">Georgia</option>
+                                <option value="HI">Hawaii</option>
+                                <option value="ID">Idaho</option>
+                                <option value="IL">Illinois</option>
+                                <option value="IN">Indiana</option>
+                                <option value="IA">Iowa</option>
+                                <option value="KS">Kansas</option>
+                                <option value="KY">Kentucky</option>
+                                <option value="LA">Louisiana</option>
+                                <option value="ME">Maine</option>
+                                <option value="MD">Maryland</option>
+                                <option value="MA">Massachusetts</option>
+                                <option value="MI">Michigan</option>
+                                <option value="MN">Minnesota</option>
+                                <option value="MS">Mississippi</option>
+                                <option value="MO">Missouri</option>
+                                <option value="MT">Montana</option>
+                                <option value="NE">Nebraska</option>
+                                <option value="NV">Nevada</option>
+                                <option value="NH">New Hampshire</option>
+                                <option value="NJ">New Jersey</option>
+                                <option value="NM">New Mexico</option>
+                                <option value="NY">New York</option>
+                                <option value="NC">North Carolina</option>
+                                <option value="ND">North Dakota</option>
+                                <option value="OH">Ohio</option>
+                                <option value="OK">Oklahoma</option>
+                                <option value="OR">Oregon</option>
+                                <option value="PA">Pennsylvania</option>
+                                <option value="RI">Rhode Island</option>
+                                <option value="SC">South Carolina</option>
+                                <option value="SD">South Dakota</option>
+                                <option value="TN">Tennessee</option>
+                                <option value="TX">Texas</option>
+                                <option value="UT">Utah</option>
+                                <option value="VT">Vermont</option>
+                                <option value="VA">Virginia</option>
+                                <option value="WA">Washington</option>
+                                <option value="WV">West Virginia</option>
+                                <option value="WI">Wisconsin</option>
+                                <option value="WY">Wyoming</option>
+                            </select>
                         </div>
+                    </div>
+
+                    <div id="stateMultiplierInfo"
+                        style="display: none; background: var(--primary-light); padding: 0.75rem; margin-top: 0.5rem; border-radius: var(--radius); font-size: 0.9rem;">
                     </div>
 
                     <h4 class="mt-4">Estimated Medical Needs (Annual)</h4>
                     <table class="medical-table">
-                        <thead><tr><th>Description</th><th>Type</th><th>Cost/Unit ($)</th><th>Count</th><th>Total</th><th>Action</th></tr></thead>
+                        <thead>
+                            <tr>
+                                <th>Description</th>
+                                <th>Type</th>
+                                <th>Cost/Unit ($)</th>
+                                <th>Count</th>
+                                <th>Total</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
                         <tbody id="needsTableBody">
-                            </tbody>
+                        </tbody>
                     </table>
 
-                    <div style="background: #f9fafb; padding: 1rem; margin-top: 1rem; border: 1px dashed var(--border); border-radius: var(--radius);">
+                    <div
+                        style="background: #f9fafb; padding: 1rem; margin-top: 1rem; border: 1px dashed var(--border); border-radius: var(--radius);">
                         <h5>Add Specific Procedure</h5>
                         <div class="grid-4" style="align-items: end;">
                             <div class="form-group">
@@ -150,20 +276,26 @@
                                 <input type="number" id="planCoin" value="20">
                             </div>
                         </div>
-                        
-                        <div class="form-group" style="background: var(--primary-light); padding: 10px; border-radius: var(--radius);">
+
+                        <div class="form-group"
+                            style="background: var(--primary-light); padding: 10px; border-radius: var(--radius);">
                             <label style="display: flex; align-items: center; cursor: pointer;">
-                                <input type="checkbox" id="hasCopays" onchange="toggleCopayFields()" style="width: auto; margin-right: 10px;"> 
+                                <input type="checkbox" id="hasCopays" onchange="toggleCopayFields()"
+                                    style="width: auto; margin-right: 10px;">
                                 Plan includes Copays? (Uncheck for HDHP)
                             </label>
                         </div>
 
                         <div id="copayFields" class="hidden">
                             <div class="grid-2">
-                                <div class="form-group"><label>PCP Copay ($)</label><input type="number" id="copayPcp" value="0"></div>
-                                <div class="form-group"><label>Specialist Copay ($)</label><input type="number" id="copaySpec" value="0"></div>
-                                <div class="form-group"><label>Urgent Care Copay ($)</label><input type="number" id="copayUc" value="0"></div>
-                                <div class="form-group"><label>ER Copay ($)</label><input type="number" id="copayEr" value="0"></div>
+                                <div class="form-group"><label>PCP Copay ($)</label><input type="number" id="copayPcp"
+                                        value="0"></div>
+                                <div class="form-group"><label>Specialist Copay ($)</label><input type="number"
+                                        id="copaySpec" value="0"></div>
+                                <div class="form-group"><label>Urgent Care Copay ($)</label><input type="number"
+                                        id="copayUc" value="0"></div>
+                                <div class="form-group"><label>ER Copay ($)</label><input type="number" id="copayEr"
+                                        value="0"></div>
                             </div>
                         </div>
 
@@ -180,7 +312,8 @@
                         <div id="planListContainer">
                             <p style="color: var(--text-light); font-style: italic;">No plans added yet.</p>
                         </div>
-                        <button class="btn btn-outline w-full mt-4" onclick="showWizardStep(3)">Run Comparison &rarr;</button>
+                        <button class="btn btn-outline w-full mt-4" onclick="showWizardStep(3)">Run Comparison
+                            &rarr;</button>
                     </div>
                 </div>
             </div>
@@ -190,7 +323,7 @@
                     <h3>Recommendation</h3>
                     <button class="btn btn-outline btn-sm" onclick="showWizardStep(2)">Back to Plans</button>
                 </div>
-                
+
                 <div id="resultsContainer"></div>
             </div>
 
@@ -203,7 +336,7 @@
             <p>Enter billed amount, allowed amount, and your plan status to explain a bill.</p>
             <div class="card mt-4">
                 <p>Use the tool on the main page to calculate costs. This section is for explaining EOBs.</p>
-             </div>
+            </div>
         </div>
     </section>
 
@@ -214,11 +347,14 @@
                 <a href="#">Privacy Policy</a> | <a href="#">Terms of Service</a>
             </div>
             <p style="color: #6B7280; font-size: 0.8rem; max-width: 600px; margin: 0 auto;">
-                <strong>Disclaimer: Not Financial Advice.</strong> The content provided on this website is for educational and informational purposes only. It does not constitute financial, insurance, or medical advice. Please consult with a qualified professional before making benefit decisions.
+                <strong>Disclaimer: Not Financial Advice.</strong> The content provided on this website is for
+                educational and informational purposes only. It does not constitute financial, insurance, or medical
+                advice. Please consult with a qualified professional before making benefit decisions.
             </p>
         </div>
     </footer>
 
     <script src="script.js"></script>
 </body>
+
 </html>

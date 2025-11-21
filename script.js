@@ -3,6 +3,28 @@ let currentTab = 'home';
 let medicalNeeds = [];
 let addedPlans = [];
 let planIdCounter = 0;
+let currentlyEditingNeed = null; // Track the need currently being edited
+
+// Base costs for standard needs (before multiplier)
+const BASE_COSTS = {
+    pcp: 150,
+    specialist: 250,
+    prescriptions: 50,
+    therapy: 5000
+};
+
+const STATE_MULTIPLIERS = {
+    'AL': 0.87, 'AK': 1.25, 'AZ': 0.95, 'AR': 0.85, 'CA': 1.35,
+    'CO': 1.05, 'CT': 1.18, 'DE': 1.02, 'FL': 0.98, 'GA': 0.92,
+    'HI': 1.40, 'ID': 0.90, 'IL': 1.02, 'IN': 0.90, 'IA': 0.92,
+    'KS': 0.89, 'KY': 0.88, 'LA': 0.90, 'ME': 1.05, 'MD': 1.15,
+    'MA': 1.30, 'MI': 0.94, 'MN': 1.00, 'MS': 0.84, 'MO': 0.88,
+    'MT': 0.95, 'NE': 0.92, 'NV': 0.98, 'NH': 1.08, 'NJ': 1.20,
+    'NM': 0.91, 'NY': 1.35, 'NC': 0.93, 'ND': 0.95, 'OH': 0.90,
+    'OK': 0.86, 'OR': 1.15, 'PA': 1.00, 'RI': 1.10, 'SC': 0.92,
+    'SD': 0.94, 'TN': 0.89, 'TX': 0.96, 'UT': 0.98, 'VT': 1.05,
+    'VA': 1.02, 'WA': 1.12, 'WV': 0.85, 'WI': 0.95, 'WY': 0.92
+};
 
 // --- NAV LOGIC ---
 function switchTab(tabId) {
@@ -11,38 +33,89 @@ function switchTab(tabId) {
     document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
     // Find button matching tab (simple logic)
     const btn = Array.from(document.querySelectorAll('.nav-btn')).find(b => b.textContent.toLowerCase().includes(tabId == 'selector' ? 'selector' : tabId));
-    if(btn) btn.classList.add('active');
-    
+    if (btn) btn.classList.add('active');
+
     document.getElementById('navLinks').classList.remove('mobile-active');
-    window.scrollTo(0,0);
+    window.scrollTo(0, 0);
 }
 
 function showWizardStep(step) {
-    for(let i=1; i<=3; i++) {
+    for (let i = 1; i <= 3; i++) {
         document.getElementById(`wizard-step-${i}`).classList.add('hidden');
         document.getElementById(`step-btn-${i}`).classList.remove('active');
     }
     document.getElementById(`wizard-step-${step}`).classList.remove('hidden');
     document.getElementById(`step-btn-${step}`).classList.add('active');
-    
-    if(step === 3) runComparison();
+
+    if (step === 3) runComparison();
 }
 
 // --- PROFILE LOGIC ---
 function loadProfile(type) {
+    const state = document.getElementById('userState').value;
+    const multiplier = STATE_MULTIPLIERS[state] || 1.0;
+
     medicalNeeds = [];
-    if(type === 'low') {
-        medicalNeeds.push({id: 1, desc: 'PCP Visit', type: 'pcp', cost: 150, count: 1});
+
+    // Base costs with multiplier
+    const basePcp = BASE_COSTS.pcp * multiplier;
+    const baseSpec = BASE_COSTS.specialist * multiplier;
+    const baseRx = BASE_COSTS.prescriptions * multiplier;
+    const baseTherapy = BASE_COSTS.therapy * multiplier;
+
+    if (type === 'low') {
+        medicalNeeds.push({ id: 1, desc: 'PCP Visit', type: 'pcp', cost: Math.round(basePcp), count: 1, isStandard: true });
     } else if (type === 'med') {
-        medicalNeeds.push({id: 1, desc: 'PCP Visit', type: 'pcp', cost: 150, count: 2});
-        medicalNeeds.push({id: 2, desc: 'Specialist Visit', type: 'specialist', cost: 250, count: 2});
-        medicalNeeds.push({id: 3, desc: 'Prescriptions', type: 'other', cost: 50, count: 4});
+        medicalNeeds.push({ id: 1, desc: 'PCP Visit', type: 'pcp', cost: Math.round(basePcp), count: 2, isStandard: true });
+        medicalNeeds.push({ id: 2, desc: 'Specialist Visit', type: 'specialist', cost: Math.round(baseSpec), count: 2, isStandard: true });
+        medicalNeeds.push({ id: 3, desc: 'Prescriptions', type: 'other', cost: Math.round(baseRx), count: 4, isStandard: true });
     } else if (type === 'high') {
-        medicalNeeds.push({id: 1, desc: 'PCP Visit', type: 'pcp', cost: 150, count: 4});
-        medicalNeeds.push({id: 2, desc: 'Specialist Visit', type: 'specialist', cost: 250, count: 6});
-        medicalNeeds.push({id: 3, desc: 'Ongoing Therapy/Care', type: 'other', cost: 5000, count: 1});
+        medicalNeeds.push({ id: 1, desc: 'PCP Visit', type: 'pcp', cost: Math.round(basePcp), count: 4, isStandard: true });
+        medicalNeeds.push({ id: 2, desc: 'Specialist Visit', type: 'specialist', cost: Math.round(baseSpec), count: 6, isStandard: true });
+        medicalNeeds.push({ id: 3, desc: 'Other expected medical expenses', type: 'other', cost: Math.round(baseTherapy), count: 1, isStandard: true });
     }
     renderNeeds();
+    updateMultiplierDisplay();
+}
+
+function updateStateMultiplier() {
+    const state = document.getElementById('userState').value;
+    const multiplier = STATE_MULTIPLIERS[state] || 1.0;
+
+    // Update only standard needs
+    medicalNeeds.forEach(need => {
+        if (need.isStandard) {
+            if (need.desc === 'PCP Visit') {
+                need.cost = Math.round(BASE_COSTS.pcp * multiplier);
+            } else if (need.desc === 'Specialist Visit') {
+                need.cost = Math.round(BASE_COSTS.specialist * multiplier);
+            } else if (need.desc === 'Prescriptions') {
+                need.cost = Math.round(BASE_COSTS.prescriptions * multiplier);
+            } else if (need.desc === 'Other expected medical expenses') {
+                need.cost = Math.round(BASE_COSTS.therapy * multiplier);
+            }
+        }
+    });
+
+    renderNeeds();
+    updateMultiplierDisplay();
+}
+
+function updateMultiplierDisplay() {
+    const state = document.getElementById('userState').value;
+    const display = document.getElementById('stateMultiplierInfo');
+
+    if (!display) return;
+
+    if (state && STATE_MULTIPLIERS[state]) {
+        const multiplier = STATE_MULTIPLIERS[state];
+        const percentage = Math.round((multiplier - 1) * 100);
+        const direction = percentage >= 0 ? '+' : '';
+        display.innerHTML = `<small style="color: #6B7280;">💰 Cost multiplier: <strong>${multiplier.toFixed(2)}</strong> (${direction}${percentage}% vs. baseline)</small>`;
+        display.style.display = 'block';
+    } else {
+        display.style.display = 'none';
+    }
 }
 
 function addCustomNeed() {
@@ -51,15 +124,39 @@ function addCustomNeed() {
     const cost = parseFloat(document.getElementById('newCost').value) || 0;
     const count = parseFloat(document.getElementById('newCount').value) || 1;
 
-    if(!desc || cost <= 0) return alert("Please enter description and cost.");
+    if (!desc || cost <= 0) return alert("Please enter description and cost.");
 
-    medicalNeeds.push({ id: Date.now(), desc, type, cost, count });
-    
-    // Clear inputs
+    medicalNeeds.push({ id: Date.now(), desc, type, cost, count, isStandard: false });
+
+    // Clear inputs and editing state
     document.getElementById('newDesc').value = '';
     document.getElementById('newCost').value = '';
-    
+    document.getElementById('newCount').value = '1';
+    currentlyEditingNeed = null;
+
     renderNeeds();
+}
+
+function editNeed(id) {
+    // If already editing another need, restore it first
+    if (currentlyEditingNeed !== null) {
+        medicalNeeds.push(currentlyEditingNeed);
+    }
+
+    const need = medicalNeeds.find(n => n.id === id);
+    if (!need) return;
+
+    // Store the need being edited
+    currentlyEditingNeed = { ...need };
+
+    document.getElementById('newDesc').value = need.desc;
+    document.getElementById('newType').value = need.type;
+    document.getElementById('newCost').value = need.cost;
+    document.getElementById('newCount').value = need.count;
+
+    removeNeed(id);
+    // Scroll to input area
+    document.getElementById('newDesc').scrollIntoView({ behavior: 'smooth' });
 }
 
 function removeNeed(id) {
@@ -82,7 +179,10 @@ function renderNeeds() {
                 <td>$${n.cost}</td>
                 <td>${n.count}</td>
                 <td>$${lineTotal}</td>
-                <td><button class="btn btn-danger btn-sm" onclick="removeNeed(${n.id})">X</button></td>
+                <td>
+                    <button class="btn btn-sm btn-outline" onclick="editNeed(${n.id})" style="margin-right:5px;">Edit</button>
+                    <button class="btn btn-danger btn-sm" onclick="removeNeed(${n.id})">X</button>
+                </td>
             </tr>
         `;
     });
@@ -93,13 +193,13 @@ function renderNeeds() {
 function toggleCopayFields() {
     const checked = document.getElementById('hasCopays').checked;
     const fields = document.getElementById('copayFields');
-    if(checked) fields.classList.remove('hidden');
+    if (checked) fields.classList.remove('hidden');
     else fields.classList.add('hidden');
 }
 
 function addPlan() {
     const name = document.getElementById('planName').value;
-    if(!name) return alert("Please name the plan.");
+    if (!name) return alert("Please name the plan.");
 
     const newPlan = {
         id: planIdCounter++,
@@ -120,14 +220,14 @@ function addPlan() {
 
     addedPlans.push(newPlan);
     renderPlanList();
-    
+
     // Reset form
     document.getElementById('planName').value = '';
 }
 
 function renderPlanList() {
     const container = document.getElementById('planListContainer');
-    if(addedPlans.length === 0) {
+    if (addedPlans.length === 0) {
         container.innerHTML = '<p style="color: var(--text-light); font-style: italic;">No plans added yet.</p>';
         return;
     }
@@ -153,7 +253,7 @@ function runComparison() {
     const container = document.getElementById('resultsContainer');
     container.innerHTML = '';
 
-    if(addedPlans.length === 0) {
+    if (addedPlans.length === 0) {
         container.innerHTML = '<p>Please add plans in Step 2.</p>';
         return;
     }
@@ -165,17 +265,17 @@ function runComparison() {
         let patientPaid = 0;
         let deductPaid = 0;
 
-        log.push({desc: "Annual Premium", val: totalPremium});
+        log.push({ desc: "Annual Premium", val: totalPremium });
 
         // Iterate Needs
         medicalNeeds.forEach(need => {
             let cost = need.cost;
             let count = need.count;
 
-            for(let i=0; i<count; i++) {
+            for (let i = 0; i < count; i++) {
                 // Stop if MOOP reached
-                if(patientPaid >= plan.moop) {
-                    log.push({desc: `MOOP Reached - ${need.desc} covered 100%`, val: 0});
+                if (patientPaid >= plan.moop) {
+                    log.push({ desc: `MOOP Reached - ${need.desc} covered 100%`, val: 0 });
                     continue;
                 }
 
@@ -184,22 +284,22 @@ function runComparison() {
                 let note = "";
 
                 // Copay Logic
-                if(plan.hasCopays && ['pcp', 'specialist', 'uc', 'er'].includes(need.type)) {
+                if (plan.hasCopays && ['pcp', 'specialist', 'uc', 'er'].includes(need.type)) {
                     let copayAmt = 0;
-                    if(need.type === 'pcp') copayAmt = plan.copays.pcp;
-                    if(need.type === 'specialist') copayAmt = plan.copays.specialist;
-                    if(need.type === 'uc') copayAmt = plan.copays.uc;
-                    if(need.type === 'er') copayAmt = plan.copays.er;
+                    if (need.type === 'pcp') copayAmt = plan.copays.pcp;
+                    if (need.type === 'specialist') copayAmt = plan.copays.specialist;
+                    if (need.type === 'uc') copayAmt = plan.copays.uc;
+                    if (need.type === 'er') copayAmt = plan.copays.er;
 
                     youPay = Math.min(charge, copayAmt);
                     note = `Copay applied ($${copayAmt})`;
-                } 
+                }
                 // Deductible Logic
                 else {
                     let remainingDed = plan.ded - deductPaid;
-                    if(remainingDed < 0) remainingDed = 0;
+                    if (remainingDed < 0) remainingDed = 0;
 
-                    if(remainingDed > 0) {
+                    if (remainingDed > 0) {
                         // In deductible phase
                         let toDed = Math.min(charge, remainingDed);
                         youPay += toDed;
@@ -208,7 +308,7 @@ function runComparison() {
                         note = "Applied to Deductible";
                     }
 
-                    if(charge > 0) {
+                    if (charge > 0) {
                         // Coinsurance phase
                         let coinsAmt = charge * (plan.coin / 100);
                         youPay += coinsAmt;
@@ -223,7 +323,7 @@ function runComparison() {
                 }
 
                 patientPaid += youPay;
-                log.push({desc: `${need.desc} (${i+1}/${count})`, val: youPay, note: note});
+                log.push({ desc: `${need.desc} (${i + 1}/${count})`, val: youPay, note: note });
             }
         });
 
@@ -239,13 +339,13 @@ function runComparison() {
         const isWinner = idx === 0;
         let logHtml = r.log.map(l => `
             <div class="log-row">
-                <span>${l.desc} ${l.note ? '<span style="font-size:0.8em; color:#666">['+l.note+']</span>' : ''}</span>
+                <span>${l.desc} ${l.note ? '<span style="font-size:0.8em; color:#666">[' + l.note + ']</span>' : ''}</span>
                 <span>$${l.val.toFixed(2)}</span>
             </div>
         `).join('');
 
         // Add Savings/Fund to log
-        if(r.plan.fund > 0) {
+        if (r.plan.fund > 0) {
             logHtml += `<div class="log-row" style="color: green;"><span>Employer Contribution</span><span>-$${r.plan.fund}</span></div>`;
         }
 
